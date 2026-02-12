@@ -1,4 +1,23 @@
 package ru.krik.model;
 
-public class RequestDTO {
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+import ru.krik.model.annotation.ValidOperationType;
+
+import java.util.UUID;
+
+
+@Data
+public class RequestDto {
+
+    @NotNull
+    private UUID walletId;
+
+    @NotNull
+    @ValidOperationType
+    private OperationType operationType;
+
+    @Min(10)
+    Long amount;
 }

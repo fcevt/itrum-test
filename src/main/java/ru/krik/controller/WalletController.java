@@ -1,39 +1,34 @@
 package ru.krik.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
-import org.springframework.kafka.requestreply.RequestReplyFuture;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import ru.krik.model.RequestDTO;
+import org.springframework.web.bind.annotation.*;
+import ru.krik.model.OperationType;
+import ru.krik.model.RequestDto;
 import ru.krik.model.ResponseDto;
-import ru.krik.service.ProducerService;
+import ru.krik.service.NotificationDispatchService;
 
-import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 @RestController
-@RequestMapping("api/v1/wallet")
+@RequestMapping("/api")
 @RequiredArgsConstructor
-public class ValletController {
-    private final ProducerService producerService;
+@Slf4j
+public class WalletController {
+    private final NotificationDispatchService notificationDispatchService;
 
-    @PostMapping
-    public ResponseEntity<Map<String, String>> sendMessage(@RequestBody RequestDTO requestDTO) {
-        try {
-            producerService.sendMessage("my-topic", requestDTO);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    @PostMapping("/v1/wallet")
+    public ResponseEntity<ResponseDto> makeSyncRequest(@RequestBody RequestDto request) throws ExecutionException, InterruptedException {
+            return ResponseEntity.ok(notificationDispatchService.dispatch(request));
     }
 
-
+    @GetMapping("/v1/wallets/{WALLET_UUID}")
+    public ResponseEntity<ResponseDto> getBalanceRequest(@PathVariable String WALLET_UUID) throws ExecutionException, InterruptedException {
+        RequestDto requestDto = new RequestDto();
+        requestDto.setOperationType(OperationType.BALANCE);
+        requestDto.setWalletId(UUID.fromString(WALLET_UUID));
+        return ResponseEntity.ok(notificationDispatchService.dispatch(requestDto));
+    }
 }

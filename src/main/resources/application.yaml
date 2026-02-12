@@ -1,11 +1,36 @@
-
+com:
+  itrum:
+    test:
+      kafka:
+        request-topic: notification-request
+        reply-topic: notification-response
+        reply-timeout: 30
 spring:
   sql:
     init:
       mode: always
   datasource:
-    url: jdbc:h2:file:./db/filmorate
+    url: jdbc:h2:file:./db/test
     driver-class-name: org.h2.Driver
     username: sa
     password: password
-logging.level.org.zalando.logbook: INFO
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: kafka-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: ru.krik.model
+    properties:
+      allow:
+        auto:
+          create:
+            topics: true
