@@ -8,10 +8,7 @@ import java.util.UUID;
 
 @Data
 public class ResponseDto {
-
-    UUID responseId;
     double balance;
     String message;
     private LocalDateTime timestamp;
-    String status;
 }

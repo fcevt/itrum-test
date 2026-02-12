@@ -1,5 +1,6 @@
 package ru.krik.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,15 +21,15 @@ public class WalletController {
     private final NotificationDispatchService notificationDispatchService;
 
     @PostMapping("/v1/wallet")
-    public ResponseEntity<ResponseDto> makeSyncRequest(@RequestBody RequestDto request) throws ExecutionException, InterruptedException {
+    public ResponseEntity<ResponseDto> makeSyncRequest(@RequestBody @Valid RequestDto request) throws ExecutionException, InterruptedException {
             return ResponseEntity.ok(notificationDispatchService.dispatch(request));
     }
 
     @GetMapping("/v1/wallets/{WALLET_UUID}")
-    public ResponseEntity<ResponseDto> getBalanceRequest(@PathVariable String WALLET_UUID) throws ExecutionException, InterruptedException {
+    public ResponseEntity<ResponseDto> getBalanceRequest(@PathVariable UUID WALLET_UUID) throws ExecutionException, InterruptedException {
         RequestDto requestDto = new RequestDto();
         requestDto.setOperationType(OperationType.BALANCE);
-        requestDto.setWalletId(UUID.fromString(WALLET_UUID));
+        requestDto.setWalletId(WALLET_UUID);
         return ResponseEntity.ok(notificationDispatchService.dispatch(requestDto));
     }
 }

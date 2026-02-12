@@ -1,5 +1,6 @@
 package ru.krik.model;
 
+
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -18,6 +19,6 @@ public class RequestDto {
     @ValidOperationType
     private OperationType operationType;
 
-    @Min(10)
-    Long amount;
+    @Min(100)
+    Double amount;
 }

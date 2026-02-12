@@ -22,7 +22,7 @@ public class WalletServiceImpl implements WalletService {
             responseDto.setMessage("Кошелька не существует");
             return responseDto;
         }
-        responseDto.setBalance(wallet.getBalance());
+        responseDto.setBalance(Util.convertCentsToDollars(wallet.getBalance()));
         return responseDto;
     }
 

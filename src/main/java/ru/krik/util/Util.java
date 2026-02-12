@@ -12,6 +12,6 @@ public class Util {
     }
 
     public static long convertDollarsToCents(double dollars) {
-        return (long) dollars * CENT_IN_DOLLAR;
+        return (long)(dollars * CENT_IN_DOLLAR);
     }
 }
